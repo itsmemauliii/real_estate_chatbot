@@ -8,8 +8,67 @@ document.addEventListener('DOMContentLoaded', () => {
     const API_BASE_URL = ''; // Keep empty for local development to use relative paths
 
     if (loginSignupForm) {
-        // --- Login/Signup Logic (NO CHANGE) ---
-        // ... (keep this section as it is) ...
+        // --- Login/Signup Logic ---
+        const signupForm = document.getElementById('signup-form');
+        const loginForm = document.getElementById('login-form');
+
+        if (signupForm) {
+            signupForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(signupForm);
+                const response = await fetch(`${API_BASE_URL}/signup`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                alert(data.message);
+                if (response.ok) {
+                    signupForm.reset();
+                    // Optionally switch to login form
+                    document.getElementById('form-title').textContent = 'Login';
+                    signupForm.style.display = 'none';
+                    loginForm.style.display = 'block';
+                }
+            });
+        }
+
+        if (loginForm) {
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(loginForm);
+                const response = await fetch(`${API_BASE_URL}/login`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                alert(data.message);
+                if (response.ok && data.redirect) {
+                    window.location.href = data.redirect;
+                }
+            });
+        }
+
+        // Toggle between login and signup forms
+        const toggleSignup = document.getElementById('toggle-signup');
+        const toggleLogin = document.getElementById('toggle-login');
+
+        if (toggleSignup) {
+            toggleSignup.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('form-title').textContent = 'Sign Up';
+                loginForm.style.display = 'none';
+                signupForm.style.display = 'block';
+            });
+        }
+
+        if (toggleLogin) {
+            toggleLogin.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('form-title').textContent = 'Login';
+                signupForm.style.display = 'none';
+                loginForm.style.display = 'block';
+            });
+        }
 
     } else if (chatBox) {
         // --- Chatbot Logic ---
@@ -62,8 +121,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     data.response.includes("Most customer leads are generated through:") ||
                     data.response.includes("Satisfaction with lead quality:") ||
                     data.response.includes("Opinion on digital marketing cost:") ||
-                    data.response.includes("For **") && data.response.includes("Marketing mediums:")) { // If project info includes marketing
-                    
+                    (data.response.includes("For **") && data.response.includes("Marketing mediums:"))) { // If project info includes marketing
+
                     insightsExplored++; // Increment insights explored
                     if (insightsExplored > 0 && insightsExplored % 5 === 0) { // Example: earn a badge for every 5 insights explored
                         badgesEarned++;
