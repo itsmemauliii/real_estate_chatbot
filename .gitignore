@@ -2,10 +2,9 @@
 __pycache__/
 *.pyc
 .env
-venv/                  # Virtual environment folder
-*.db                   # SQLite database file (users.db will be here)
-!backend/users.db      # Optional: if you want to commit an empty users.db for initial setup, uncomment this line.
-                       # However, it's generally better to let it be created automatically or manage via migrations.
+venv/
+*.db # For SQLite database, you might not want to commit user data directly
+!backend/users.db # If you decide to commit an empty users.db for initial setup
 
 # macOS
 .DS_Store
@@ -13,10 +12,10 @@ venv/                  # Virtual environment folder
 # Windows
 Thumbs.db
 
-# Flask specific
-instance/              # Flask instance folder (contains app-specific configs, if any)
+# Flask
+instance/
 
-# IDE specific files (e.g., VS Code, IntelliJ)
+# IDE specific files
 .vscode/
 .idea/
 
