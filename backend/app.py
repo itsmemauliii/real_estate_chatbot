@@ -11,6 +11,7 @@ app = Flask(__name__, template_folder='../frontend')
 CORS(app) # Enable CORS for frontend interaction
 
 # Load property data once on startup
+# Ensure this path is correct relative to where app.py is run from (usually the project root)
 properties_df = load_properties_data(filepath='data/properties.csv')
 
 @app.route('/')
@@ -36,14 +37,27 @@ def chat():
         if recommendations:
             response_message = "Here are some properties that match your criteria:<br>"
             for prop in recommendations[:5]: # Limit to 5 for brevity
-                price_formatted = f"₹{prop['price']:,}" # Format price with commas
+                # Safely get values, converting to string and capitalizing if needed
+                # Use .get() with a default value like 'N/A' or an empty string to avoid KeyError if a column is truly missing,
+                # and str() to ensure it's a string before calling .capitalize()
+                bedrooms = prop.get('bedrooms', 'N/A')
+                prop_type = str(prop.get('type', 'N/A')).capitalize()
+                location = str(prop.get('location', 'N/A')).capitalize()
+                area_sqft = prop.get('area_sqft', 'N/A')
+                price = prop.get('price', 0) # Default to 0 if price is missing
+                description = str(prop.get('description', 'No description provided.')).strip() # Default and strip whitespace
+
+                price_formatted = f"₹{price:,}" # Format price with commas
+
                 response_message += (
-                    f"- **{prop['bedrooms']}BHK {prop['type'].capitalize()}** in **{prop['location'].capitalize()}** "
-                    f"for **{price_formatted}** (Area: {prop['area_sqft']} sqft). "
-                    f"Description: {prop['description']}. "
+                    f"- **{bedrooms}BHK {prop_type}** in **{location}** "
+                    f"for **{price_formatted}** (Area: {area_sqft} sqft). "
+                    f"Description: {description}. "
                 )
-                if 'image_url' in prop and prop['image_url']:
-                    response_message += f"<a href='{prop['image_url']}' target='_blank'>View Image</a><br>"
+                # Check for image_url existence and validity
+                image_url = prop.get('image_url')
+                if image_url and isinstance(image_url, str) and image_url.strip(): # Ensure it's a non-empty string
+                    response_message += f"<a href='{image_url}' target='_blank'>View Image</a><br>"
                 else:
                     response_message += "<br>"
         else:
