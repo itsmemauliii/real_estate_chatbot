@@ -1,1 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Estate Chatbot - Login/Signup</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="auth-container">
+        <h2>Welcome to the Real Estate Chatbot!</h2>
+        <div class="form-container">
+            <form id="signup-form">
+                <h3>Sign Up</h3>
+                <input type="text" id="signup-username" placeholder="Choose a Username" required>
+                <input type="password" id="signup-password" placeholder="Choose a Password" required>
+                <button type="submit">Sign Up</button>
+                <p id="signup-message"></p>
+            </form>
 
+            <form id="login-form">
+                <h3>Login</h3>
+                <input type="text" id="login-username" placeholder="Your Username" required>
+                <input type="password" id="login-password" placeholder="Your Password" required>
+                <button type="submit">Login</button>
+                <p id="login-message"></p>
+            </form>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
