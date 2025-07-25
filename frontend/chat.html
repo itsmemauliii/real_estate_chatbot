@@ -3,30 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real Estate Chatbot</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Chat with Marketing Insights Bot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="chat-container">
-        <header>
-            <h1>Real Estate Chatbot</h1>
-            <p>Welcome, <span id="username-display">{{ username }}</span>! <a href="/logout">Logout</a></p>
-        </header>
+        <div class="chat-header">
+            <h1>Marketing Insights Bot</h1>
+            <button class="logout-button" onclick="location.href='/logout'">Logout</button>
+        </div>
         <div class="chat-box" id="chat-box">
-            <div class="message bot-message">Hello! I'm your Real Estate Chatbot. How can I help you find your dream property today?</div>
+            <div class="message bot-message">Hello {{ username }}! I'm your Real Estate Marketing Insights bot. How can I assist you with project marketing data today?</div>
         </div>
         <div class="chat-input">
             <input type="text" id="user-input" placeholder="Type your message...">
             <button id="send-button">Send</button>
         </div>
-
-        <div class="gamification-panel">
+        <div class="gamification-area">
             <h3>Your Marketing Journey</h3>
             <p>Insights Explored: <span id="insights-explored">0</span></p>
             <p>Badges Earned: <span id="badges-earned">0</span></p>
-            <button id="quiz-button">Start Property Trivia!</button>
+            <button id="quiz-button">Start Marketing Quiz</button>
         </div>
     </div>
-    <script src="script.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
