@@ -8,98 +8,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const API_BASE_URL = ''; // Keep empty for local development to use relative paths
 
     if (loginSignupForm) {
-        // --- Login/Signup Logic ---
-        const signupForm = document.getElementById('signup-form');
-        const loginForm = document.getElementById('login-form');
-        const signupMessage = document.getElementById('signup-message');
-        const loginMessage = document.getElementById('login-message');
-
-        signupForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('signup-username').value;
-            const password = document.getElementById('signup-password').value;
-
-            // Simple validation
-            if (username.length < 3) {
-                signupMessage.textContent = 'Username must be at least 3 characters.';
-                signupMessage.style.color = 'red';
-                return;
-            }
-            if (password.length < 6) {
-                signupMessage.textContent = 'Password must be at least 6 characters.';
-                signupMessage.style.color = 'red';
-                return;
-            }
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/signup`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
-                });
-                const data = await response.json();
-                signupMessage.textContent = data.message;
-                signupMessage.style.color = response.ok ? 'green' : 'red';
-                if (response.ok) {
-                    signupForm.reset(); // Clear form on success
-                }
-            } catch (error) {
-                signupMessage.textContent = 'An error occurred. Please try again.';
-                signupMessage.style.color = 'red';
-                console.error('Signup error:', error);
-            }
-        });
-
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('login-username').value;
-            const password = document.getElementById('login-password').value;
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/login`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
-                });
-                const data = await response.json();
-                loginMessage.textContent = data.message;
-                loginMessage.style.color = response.ok ? 'green' : 'red';
-
-                if (response.ok && data.redirect) {
-                    window.location.href = data.redirect; // Redirect to chat page
-                }
-            } catch (error) {
-                loginMessage.textContent = 'An error occurred during login. Please try again.';
-                loginMessage.style.color = 'red';
-                console.error('Login error:', error);
-            }
-        });
+        // --- Login/Signup Logic (NO CHANGE) ---
+        // ... (keep this section as it is) ...
 
     } else if (chatBox) {
         // --- Chatbot Logic ---
         const userInput = document.getElementById('user-input');
         const sendButton = document.getElementById('send-button');
 
-        let propertiesViewed = parseInt(localStorage.getItem('propertiesViewed')) || 0;
+        // RENAMED: from propertiesViewed to insightsExplored
+        let insightsExplored = parseInt(localStorage.getItem('insightsExplored')) || 0;
         let badgesEarned = parseInt(localStorage.getItem('badgesEarned')) || 0;
 
         function updateGamificationUI() {
-            document.getElementById('properties-viewed').textContent = propertiesViewed;
+            // RENAMED: properties-viewed to insights-explored
+            document.getElementById('insights-explored').textContent = insightsExplored;
             document.getElementById('badges-earned').textContent = badgesEarned;
-            localStorage.setItem('propertiesViewed', propertiesViewed);
+            localStorage.setItem('insightsExplored', insightsExplored); // Updated storage key
             localStorage.setItem('badgesEarned', badgesEarned);
         }
 
         const appendMessage = (message, sender) => {
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message', `${sender}-message`);
-            messageDiv.innerHTML = message; // Use innerHTML to allow for HTML tags (like <br>, <a>) in bot response
+            messageDiv.innerHTML = message;
             chatBox.appendChild(messageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll to bottom
+            chatBox.scrollTop = chatBox.scrollHeight;
         };
 
         const sendMessage = async () => {
@@ -107,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (message === '') return;
 
             appendMessage(message, 'user');
-            userInput.value = ''; // Clear input field
+            userInput.value = '';
 
             try {
                 const response = await fetch(`${API_BASE_URL}/chat`, {
@@ -121,11 +55,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 appendMessage(data.response, 'bot');
 
                 // Gamification update based on bot's response
-                if (data.response.includes("Here are some properties")) {
-                    propertiesViewed++;
-                    if (propertiesViewed > 0 && propertiesViewed % 5 === 0) { // Example: earn a badge for every 5 properties viewed
+                // Adjusted conditions to trigger for relevant marketing insights
+                if (data.response.includes("Commonly used marketing mediums:") ||
+                    data.response.includes("Common social media platforms used:") ||
+                    data.response.includes("Common digital marketing services used:") ||
+                    data.response.includes("Most customer leads are generated through:") ||
+                    data.response.includes("Satisfaction with lead quality:") ||
+                    data.response.includes("Opinion on digital marketing cost:") ||
+                    data.response.includes("For **") && data.response.includes("Marketing mediums:")) { // If project info includes marketing
+                    
+                    insightsExplored++; // Increment insights explored
+                    if (insightsExplored > 0 && insightsExplored % 5 === 0) { // Example: earn a badge for every 5 insights explored
                         badgesEarned++;
-                        appendMessage("🎉 Congratulations! You earned a 'Property Explorer' badge!", 'bot');
+                        appendMessage("🎉 Congratulations! You earned a 'Marketing Explorer' badge!", 'bot');
                     }
                     updateGamificationUI();
                 }
@@ -144,9 +86,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         document.getElementById('quiz-button').addEventListener('click', () => {
-            appendMessage("Welcome to the Property Trivia! I'll ask you some questions. Can you name a popular residential area in Bangalore?", 'bot');
-            // In a real scenario, you'd trigger a more complex quiz flow here
-            // (e.g., send an intent to backend to fetch quiz questions, manage state)
+            appendMessage("Welcome to the Marketing Trivia! I'll ask you some questions. For instance, 'Which digital marketing service focuses on content and SEO?'", 'bot');
+            // Placeholder: Implement actual quiz logic here
         });
 
         updateGamificationUI(); // Initialize UI on load with stored values
