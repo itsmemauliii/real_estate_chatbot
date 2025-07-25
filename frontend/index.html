@@ -3,28 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real Estate Chatbot - Login/Signup</title>
+    <title>Real Estate Chatbot</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="auth-container">
-        <h2>Welcome to the Real Estate Chatbot!</h2>
-        <div class="form-container">
-            <form id="signup-form">
-                <h3>Sign Up</h3>
-                <input type="text" id="signup-username" placeholder="Choose a Username" required>
-                <input type="password" id="signup-password" placeholder="Choose a Password" required>
-                <button type="submit">Sign Up</button>
-                <p id="signup-message"></p>
-            </form>
-
-            <form id="login-form">
-                <h3>Login</h3>
-                <input type="text" id="login-username" placeholder="Your Username" required>
-                <input type="password" id="login-password" placeholder="Your Password" required>
-                <button type="submit">Login</button>
-                <p id="login-message"></p>
-            </form>
+    <div class="chat-container">
+        <header>
+            <h1>Real Estate Chatbot</h1>
+        </header>
+        <div class="chat-box" id="chat-box">
+            <div class="message bot-message">Hello! I'm your Real Estate Chatbot. How can I help you find your dream property today?</div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Type your message...">
+            <button id="send-button">Send</button>
         </div>
     </div>
     <script src="script.js"></script>
