@@ -176,3 +176,18 @@ p#signup-message, p#login-message {
         max-width: 90%;
     }
 }
+.toggle-form-text {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 0.9em;
+}
+
+.toggle-form-text a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.toggle-form-text a:hover {
+    text-decoration: underline;
+}
