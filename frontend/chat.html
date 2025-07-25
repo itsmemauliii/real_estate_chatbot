@@ -1,1 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Estate Chatbot</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="chat-container">
+        <header>
+            <h1>Real Estate Chatbot</h1>
+            <p>Welcome, <span id="username-display">{{ username }}</span>! <a href="/logout">Logout</a></p>
+        </header>
+        <div class="chat-box" id="chat-box">
+            <div class="message bot-message">Hello! I'm your Real Estate Chatbot. How can I help you find your dream property today?</div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Type your message...">
+            <button id="send-button">Send</button>
+        </div>
 
+        <div class="gamification-panel">
+            <h3>Your Property Journey</h3>
+            <p>Properties Explored: <span id="properties-viewed">0</span></p>
+            <p>Badges Earned: <span id="badges-earned">0</span></p>
+            <button id="quiz-button">Start Property Trivia!</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
