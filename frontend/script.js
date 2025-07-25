@@ -11,42 +11,84 @@ document.addEventListener('DOMContentLoaded', () => {
         // --- Login/Signup Logic ---
         const signupForm = document.getElementById('signup-form');
         const loginForm = document.getElementById('login-form');
+        const signupMessage = document.getElementById('signup-message');
+        const loginMessage = document.getElementById('login-message');
+        const formTitle = document.getElementById('form-title');
 
-        if (signupForm) {
-            signupForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const formData = new FormData(signupForm);
+        // Initially show login form
+        signupForm.style.display = 'none';
+        loginForm.style.display = 'block';
+
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('signup-username').value;
+            const password = document.getElementById('signup-password').value;
+
+            // Simple validation
+            if (username.length < 3) {
+                signupMessage.textContent = 'Username must be at least 3 characters.';
+                signupMessage.style.color = 'red';
+                return;
+            }
+            if (password.length < 6) {
+                signupMessage.textContent = 'Password must be at least 6 characters.';
+                signupMessage.style.color = 'red';
+                return;
+            }
+
+            try {
                 const response = await fetch(`${API_BASE_URL}/signup`, {
                     method: 'POST',
-                    body: formData
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
                 });
                 const data = await response.json();
-                alert(data.message);
+                signupMessage.textContent = data.message;
+                signupMessage.style.color = response.ok ? 'green' : 'red';
                 if (response.ok) {
-                    signupForm.reset();
-                    // Optionally switch to login form
-                    document.getElementById('form-title').textContent = 'Login';
-                    signupForm.style.display = 'none';
+                    signupForm.reset(); // Clear form on success
+                    // Automatically switch to login form after successful signup
+                    formTitle.textContent = 'Login';
                     loginForm.style.display = 'block';
+                    signupForm.style.display = 'none';
+                    loginMessage.textContent = 'Account created! Please log in.';
+                    loginMessage.style.color = 'green';
                 }
-            });
-        }
+            } catch (error) {
+                signupMessage.textContent = 'An error occurred. Please try again.';
+                signupMessage.style.color = 'red';
+                console.error('Signup error:', error);
+            }
+        });
 
-        if (loginForm) {
-            loginForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const formData = new FormData(loginForm);
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+
+            try {
                 const response = await fetch(`${API_BASE_URL}/login`, {
                     method: 'POST',
-                    body: formData
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
                 });
                 const data = await response.json();
-                alert(data.message);
+                loginMessage.textContent = data.message;
+                loginMessage.style.color = response.ok ? 'green' : 'red';
+
                 if (response.ok && data.redirect) {
-                    window.location.href = data.redirect;
+                    window.location.href = data.redirect; // Redirect to chat page
                 }
-            });
-        }
+            } catch (error) {
+                loginMessage.textContent = 'An error occurred during login. Please try again.';
+                loginMessage.style.color = 'red';
+                console.error('Login error:', error);
+            }
+        });
 
         // Toggle between login and signup forms
         const toggleSignup = document.getElementById('toggle-signup');
@@ -55,44 +97,48 @@ document.addEventListener('DOMContentLoaded', () => {
         if (toggleSignup) {
             toggleSignup.addEventListener('click', (e) => {
                 e.preventDefault();
-                document.getElementById('form-title').textContent = 'Sign Up';
+                formTitle.textContent = 'Sign Up';
                 loginForm.style.display = 'none';
                 signupForm.style.display = 'block';
+                signupMessage.textContent = ''; // Clear messages
+                loginMessage.textContent = '';
             });
         }
 
         if (toggleLogin) {
             toggleLogin.addEventListener('click', (e) => {
                 e.preventDefault();
-                document.getElementById('form-title').textContent = 'Login';
+                formTitle.textContent = 'Login';
                 signupForm.style.display = 'none';
                 loginForm.style.display = 'block';
+                signupMessage.textContent = ''; // Clear messages
+                loginMessage.textContent = '';
             });
         }
+
 
     } else if (chatBox) {
         // --- Chatbot Logic ---
         const userInput = document.getElementById('user-input');
         const sendButton = document.getElementById('send-button');
 
-        // RENAMED: from propertiesViewed to insightsExplored
-        let insightsExplored = parseInt(localStorage.getItem('insightsExplored')) || 0;
+        // Gamification variables
+        let propertiesViewed = parseInt(localStorage.getItem('propertiesViewed')) || 0;
         let badgesEarned = parseInt(localStorage.getItem('badgesEarned')) || 0;
 
         function updateGamificationUI() {
-            // RENAMED: properties-viewed to insights-explored
-            document.getElementById('insights-explored').textContent = insightsExplored;
+            document.getElementById('properties-viewed').textContent = propertiesViewed;
             document.getElementById('badges-earned').textContent = badgesEarned;
-            localStorage.setItem('insightsExplored', insightsExplored); // Updated storage key
+            localStorage.setItem('propertiesViewed', propertiesViewed);
             localStorage.setItem('badgesEarned', badgesEarned);
         }
 
         const appendMessage = (message, sender) => {
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message', `${sender}-message`);
-            messageDiv.innerHTML = message;
+            messageDiv.innerHTML = message; // Use innerHTML to allow for HTML tags in bot response
             chatBox.appendChild(messageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
+            chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll to bottom
         };
 
         const sendMessage = async () => {
@@ -114,26 +160,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 appendMessage(data.response, 'bot');
 
                 // Gamification update based on bot's response
-                // Adjusted conditions to trigger for relevant marketing insights
-                if (data.response.includes("Commonly used marketing mediums:") ||
-                    data.response.includes("Common social media platforms used:") ||
-                    data.response.includes("Common digital marketing services used:") ||
-                    data.response.includes("Most customer leads are generated through:") ||
-                    data.response.includes("Satisfaction with lead quality:") ||
-                    data.response.includes("Opinion on digital marketing cost:") ||
-                    (data.response.includes("For **") && data.response.includes("Marketing mediums:"))) { // If project info includes marketing
-
-                    insightsExplored++; // Increment insights explored
-                    if (insightsExplored > 0 && insightsExplored % 5 === 0) { // Example: earn a badge for every 5 insights explored
+                if (data.response.includes("Here are some properties")) {
+                    propertiesViewed++;
+                    if (propertiesViewed > 0 && propertiesViewed % 5 === 0) { // Example: earn a badge for every 5 properties viewed
                         badgesEarned++;
-                        appendMessage("🎉 Congratulations! You earned a 'Marketing Explorer' badge!", 'bot');
+                        appendMessage("🎉 Congratulations! You earned a 'Property Explorer' badge!", 'bot');
                     }
                     updateGamificationUI();
                 }
 
             } catch (error) {
-                console.error('Error sending message to chatbot:', error);
-                appendMessage("Sorry, I'm having trouble connecting or processing your request. Please try again later.", 'bot');
+                console.error('Error sending message:', error);
+                appendMessage("Sorry, I'm having trouble connecting. Please try again later.", 'bot');
             }
         };
 
@@ -145,10 +183,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         document.getElementById('quiz-button').addEventListener('click', () => {
-            appendMessage("Welcome to the Marketing Trivia! I'll ask you some questions. For instance, 'Which digital marketing service focuses on content and SEO?'", 'bot');
-            // Placeholder: Implement actual quiz logic here
+            appendMessage("Welcome to the Property Quiz! I'll ask you some questions about real estate. Answer correctly to earn bonus points!", 'bot');
+            // Implement quiz logic here (e.g., send a specific intent to backend to start quiz)
+            // For now, this is just a placeholder.
         });
 
-        updateGamificationUI(); // Initialize UI on load with stored values
+        updateGamificationUI(); // Initialize UI on load
     }
 });
