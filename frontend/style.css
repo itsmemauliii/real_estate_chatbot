@@ -1,1 +1,178 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #e0f2f7; /* Light blue background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: #333;
+}
 
+.auth-container, .chat-container {
+    background-color: #ffffff;
+    padding: 35px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    width: 90%;
+    max-width: 550px;
+    box-sizing: border-box; /* Include padding in width calculation */
+}
+
+.auth-container h2, .chat-container h1 {
+    text-align: center;
+    color: #0056b3; /* Darker blue for headings */
+    margin-bottom: 25px;
+    font-size: 1.8em;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+form {
+    border: 1px solid #cceeff; /* Light blue border */
+    padding: 25px;
+    border-radius: 8px;
+    background-color: #f8fcff; /* Very light blue background */
+}
+
+form h3 {
+    text-align: center;
+    margin-top: 0;
+    color: #007bff; /* Bright blue for subheadings */
+    font-size: 1.3em;
+    margin-bottom: 20px;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: calc(100% - 22px); /* Account for padding */
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #a8d5e5; /* Medium blue border */
+    border-radius: 6px;
+    font-size: 1em;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+p#signup-message, p#login-message {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 0.95em;
+    font-weight: bold;
+}
+
+/* Chatbot specific styles */
+.chat-box {
+    border: 1px solid #a8d5e5;
+    padding: 20px;
+    height: 400px; /* Increased height */
+    overflow-y: auto;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    background-color: #f0f8ff; /* Alice Blue */
+    display: flex;
+    flex-direction: column;
+}
+
+.message {
+    margin-bottom: 12px;
+    padding: 10px 15px;
+    border-radius: 18px;
+    max-width: 75%; /* Slightly wider max-width */
+    line-height: 1.5;
+    word-wrap: break-word; /* Ensure long words break */
+}
+
+.user-message {
+    background-color: #007bff;
+    color: white;
+    align-self: flex-end;
+    margin-left: auto;
+    border-bottom-right-radius: 4px; /* Pointy corner */
+}
+
+.bot-message {
+    background-color: #e2f4ff; /* Lighter blue for bot */
+    color: #333;
+    align-self: flex-start;
+    border-bottom-left-radius: 4px; /* Pointy corner */
+}
+
+.bot-message a {
+    color: #0056b3; /* Link color within bot messages */
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.bot-message a:hover {
+    text-decoration: underline;
+}
+
+.chat-input {
+    display: flex;
+    gap: 10px;
+}
+
+.chat-input input {
+    flex-grow: 1;
+    margin-bottom: 0; /* Override default margin-bottom */
+}
+
+/* Gamification */
+.gamification-panel {
+    margin-top: 25px;
+    padding: 20px;
+    border: 2px dashed #87ceeb; /* Sky blue dashed border */
+    border-radius: 10px;
+    background-color: #e0ffff; /* Light cyan background */
+    text-align: center;
+    color: #0056b3;
+}
+
+.gamification-panel h3 {
+    margin-top: 0;
+    color: #0056b3;
+    font-size: 1.2em;
+}
+
+.gamification-panel p {
+    margin: 8px 0;
+    font-size: 1.1em;
+}
+
+#username-display {
+    font-weight: bold;
+    color: #0056b3; /* Darker blue for username */
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .auth-container, .chat-container {
+        padding: 20px;
+        margin: 15px;
+    }
+
+    .message {
+        max-width: 90%;
+    }
+}
